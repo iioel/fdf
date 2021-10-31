@@ -1,4 +1,4 @@
-#include "minilibx/mlx.h"
+#include <mlx.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,17 +9,19 @@ typedef struct s_window
 	void	*w;
 	int		width;
 	int		height;
+	int		grid_w;
+	int 	grid_h;
 	int		tile_width;
 	int		tile_height;
 	int		col;
 }				t_window;
 
-typedef struct s_dot
+typedef struct s_pixel
 {
 	int x;
 	int y;
 	int color;
-}				t_dot;
+}				t_pixel;
 
 int display(t_window *w);
 
@@ -30,9 +32,9 @@ int catch_key(int t, t_window *w)
 	return (0);
 }
 
-t_dot get_dot(t_window *w, int x, int y, int z)
+t_pixel get_pixel(t_window *w, int x, int y, int z)
 {
-	t_dot	d;
+	t_pixel	d;
 	int		x_e;
 	int		y_e;
 
@@ -48,14 +50,14 @@ t_dot get_dot(t_window *w, int x, int y, int z)
 		x_e += w->tile_width / 2;
 		y_e += w->tile_height / 2;
 	}
-	y_e -= z * w->tile_height * 0.8;
+	y_e -= z * w->tile_height * 0.2;
 	d.x = x_e;
 	d.y = y_e;
-	d.color = 0x00FFFFFF;
+	d.color = 0xFFFFFF;
 	return (d);
 }
 
-void line_put(t_window *w, t_dot a, t_dot b)
+void line_put(t_window *w, t_pixel a, t_pixel b)
 {
 	double x;
 	double y;
@@ -64,21 +66,28 @@ void line_put(t_window *w, t_dot a, t_dot b)
 	x = 0.;
 	y = 0.;
 	m = (b.y - a.y) / (double)(b.x - a.x);
-//	if (a.x > b.x)
-//		sign = -1;
 	while ((int)x < (a.x - b.x))
 	{
 		y = m * x;
-		mlx_pixel_put(w->cn, w->w, (int)x + b.x, (int)y + b.y, 0x00FFFFFF);
+		while (abs((int)(y) - (int)(m * (x + 1))))
+		{
+			mlx_pixel_put(w->cn, w->w, (int)x + b.x, (int)y + b.y, b.color);
+			if ((int)(y) - (int)(m * (x + 1)) < 0)
+				y++;
+			else
+				y--;
+		}
 		x++;
 	}
 }
 
 int display(t_window *w)
 {
-	t_dot	d;
+	t_pixel	p;
 	int		x;
 	int		y;
+
+	int 	t[4 * 4] = {0,0,0,0,0,10,10,0,0,10,10,0,0,0,0,0};
 
 	x = 0;
 	y = 0;
@@ -88,12 +97,12 @@ int display(t_window *w)
 		y = 0;
 		while (y < w->col)
 		{
-			d = get_dot(w, x, y, 0);
-			mlx_pixel_put(w->cn, w->w, d.x, d.y, d.color);
+			p = get_pixel(w, x, y, t[x + y * w->col]);
+			mlx_pixel_put(w->cn, w->w, p.x, p.y, p.color);
 			if (x != 0)
-				line_put(w, d, get_dot(w, x - 1, y, 0));
+				line_put(w, p, get_pixel(w, x - 1, y, t[x - 1 + y * w->col]));
 			if (y != 0)
-				line_put(w, d, get_dot(w, x, y - 1, 0));
+				line_put(w, p, get_pixel(w, x, y - 1, t[x + (y - 1)* w->col]));
 			y++;
 		}
 		x++;

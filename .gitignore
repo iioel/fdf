@@ -1,3 +1,4 @@
 *.o
 fdf
 minilibx
+includes/mlx.h
