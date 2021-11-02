@@ -1,20 +1,26 @@
 NAME = fdf
 
-SRCS = fdf.c
+SRCS = fdf.c \
+	   gnl/get_next_line.c \
+	   gnl/get_next_line_utils.c
 SRCS_DIR = src
 
 OBJS = $(SRCS:.c=.o)
 OBJS_DIR = obj
+
+DIRS = obj obj/gnl
 
 _SRCS = $(addprefix $(SRCS_DIR)/, $(SRCS))
 _OBJS = $(addprefix $(OBJS_DIR)/, $(OBJS))
 
 HEADERS = includes
 MLX_DIR = minilibx
+LIBFT = libft.a
+LIBFT_DIR = libft
 
 CC = clang
 CFLAGS = -g -I $(HEADERS)
-LFLAGS = $(CFLAGS) -lmlx -framework OpenGL -framework AppKit -L $(MLX_DIR)
+LFLAGS = $(CFLAGS) -lmlx -framework OpenGL -framework AppKit -L $(MLX_DIR) #-fsanitize=address -g
 
 UNAME = $(shell uname -s)
 ifeq ($(UNAME), Linux)
@@ -26,10 +32,15 @@ endif
 all: $(NAME)
 
 $(NAME): $(_OBJS)
-	$(CC) $(_OBJS) $(LFLAGS) -o $(NAME)
+	$(CC) $(_OBJS) $(LIBFT_DIR)/$(LIBFT) $(LFLAGS) -o $(NAME)
 
-$(_OBJS): $(OBJS_DIR)/%.o : $(SRCS_DIR)/%.c $(OBJS_DIR) mlx
+$(_OBJS): $(OBJS_DIR)/%.o : $(SRCS_DIR)/%.c $(DIRS) $(LIBFT_DIR)/$(LIBFT) mlx
 	$(CC) -c $(CFLAGS) $< -o $@
+
+$(LIBFT_DIR)/$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR) all
+	$(MAKE) -C $(LIBFT_DIR) bonus
+	cp $(LIBFT_DIR)/libft.h $(HEADERS)/libft.h
 
 mlx:
 	@echo "=========== Compiling MinilibX ==========="
@@ -43,13 +54,15 @@ mlx_clean:
 	rm $(HEADERS)/mlx.h
 	@echo "========= End Compiling MinilibX ========="
 
-$(OBJS_DIR):
-	mkdir $(OBJS_DIR)
+$(DIRS):
+	mkdir -p $(DIRS)
 
 clean:
 	rm -rf $(OBJS_DIR)
+	$(MAKE) -C $(LIBFT_DIR) clean
 
-fclean: clean
-	rm -rf $(NAME)
+fclean:
+	rm -rf $(OBJS_DIR) $(NAME)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
