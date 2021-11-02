@@ -24,6 +24,10 @@ int catch_key(int t, t_window *w)
 		w->tile_width++;
 	else if (t == 125)
 		w->tile_width--;
+	else if (t == 123)
+		w->tile_rot++;
+	else if (t == 124)
+		w->tile_rot--;
 
 	return (0);
 }
@@ -45,27 +49,28 @@ void	set_rgb_d(double hsv_c[3], double H, double S, double V)
 t_pixel get_pixel(t_window *w, int x, int y, int z)
 {
 	t_pixel	d;
-	int		x_e;
-	int		y_e;
+	double		x_e;
+	double		y_e;
 
 	x_e = w->tile_width / 2;
 	y_e = (w->grid_w) * w->tile_height / 2 + w->grid_h * w->tile_height / 1.5;
 	while (x-- > 0)
 	{
 		x_e += w->tile_width / 2;
-		y_e -= w->tile_height / 2;
+		y_e -= w->tile_height / 2 + w->tile_rot / 1.5;
 	}
 	while (y-- > 0)
 	{
-		x_e += w->tile_width / 2;
-		y_e += w->tile_height / 2;
+		x_e += w->tile_width / 2 + w->tile_rot * 1.1;
+		y_e += w->tile_height / 2 - w->tile_rot / 1.5;
 	}
 	//y_e -= z * w->tile_height * 0.08;
-	y_e -= z * w->tile_height * 1.1;
-	d.x = x_e;
-	d.y = y_e;
-	//set_hsv(d.hsv_c, 60 + z * 26, abs(z * 10), 75);
-	set_hsv(d.hsv_c, 60, 0, 100);
+	y_e -= z * (w->tile_height * 1.1 + w->tile_rot);
+	//x_e += w->tile_rot;
+	d.x = (int)x_e;
+	d.y = (int)y_e;
+	set_hsv(d.hsv_c, 60 + z * 26, 40, 50);//abs(z * 10), 75);
+	//set_hsv(d.hsv_c, 60, 0, 100);
 	return (d);
 }
 
@@ -79,6 +84,11 @@ int hsv2rgb(short H, short S, short V)
 
 	SV[0] = S / 100.0;
 	SV[1] = V / 100.0;
+	while (H < 0 || H > 360)
+		if (H < 0)
+			H *= -1;
+		else
+			H /= 360;
 	C = SV[1] * SV[0];
 	X = C * (1 - abs((H / 60) % 2 - 1));
 	m = SV[1] - C;
@@ -121,11 +131,12 @@ void line_put(t_window *w, t_pixel a, t_pixel b)
 		hsv_c[2] = b.hsv_c[2] + (short)(m_c[2] * x);
 		//printf("%d + %f, %d + %f, %d + %f = %x\n", hsv_c[0], m_c[0], hsv_c[1], m_c[1], hsv_c[2], m_c[2], hsv2rgb(hsv_c[0], hsv_c[1], hsv_c[2]));
 		if ((int)(y) - (int)(m * (x + 1)) < 0)
-			while ((int)(y) - (int)(m * (x + 1)) <= 0)
+			while ((int)(y) - (int)(m * (x + 1)) < 0)
 				mlx_pixel_put(w->cn, w->w, (int)x + b.x, (int)y++ + b.y, hsv2rgb(hsv_c[0], hsv_c[1], hsv_c[2]));
 		else
 			while ((int)(y) - (int)(m * (x + 1)) >= 0)
 				mlx_pixel_put(w->cn, w->w, (int)x + b.x, (int)y-- + b.y, hsv2rgb(hsv_c[0], hsv_c[1], hsv_c[2]));
+
 		x++;
 	}
 }
@@ -142,7 +153,7 @@ int display(t_window *w)
 
 	x = 0;
 	y = 0;
-	w->tile_height = w->tile_width / 1.2;
+	w->tile_height = w->tile_width / 1.6;
 	mlx_clear_window(w->cn, w->w);
 	while (x < w->grid_w)
 	{
@@ -207,13 +218,14 @@ short *read_file(char *f, t_window *w)
 		free(line);
 		line = get_next_line(fd);
 		w->grid_w = j;
-		w->grid_l = i / j;
+		w->grid_l = i / (j);
 		//w->tile_width = 128 / (w->grid_w / 4);
 		w->tile_width = 7;
-		w->tile_height = w->tile_width / 1.8;
+		w->tile_height = w->tile_width / 1.7;
 		
 		//display(w, tab);
 	}
+	w->tile_rot = 0;
 	return (tab);
 }
 
