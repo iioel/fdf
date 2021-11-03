@@ -11,22 +11,22 @@
 int catch_key(int t, t_window *w)
 {
 	printf("key : %d\n", t);
-	if (t == 53)
+	if (t == 53 || t == 65307)
 	{
 		mlx_destroy_window(w->cn, w->w);
 		exit(0);
 	}
 	else if (t == 8)
 		mlx_clear_window(w->cn, w->w);
-	else if (t == 15)
+	else if (t == 15 || t == 114)
 		display(w);
-	else if (t == 126)
+	else if (t == 126 || t == 65362)
 		w->tile_width++;
-	else if (t == 125)
+	else if (t == 125 || t == 65364)
 		w->tile_width--;
-	else if (t == 123)
+	else if (t == 123 || t == 65361)
 		w->tile_rot++;
-	else if (t == 124)
+	else if (t == 124 || t == 65363)
 		w->tile_rot--;
 
 	return (0);
@@ -217,7 +217,7 @@ short *read_file(char *f, t_window *w)
 		free(t_line);
 		free(line);
 		line = get_next_line(fd);
-		w->grid_w = j;
+		w->grid_w = j - 1;
 		w->grid_l = i / (j);
 		//w->tile_width = 128 / (w->grid_w / 4);
 		w->tile_width = 7;
