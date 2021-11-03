@@ -109,8 +109,32 @@ int hsv2rgb(short H, short S, short V)
 	return ((int)((rgb[0] + m) * 255) * 0x10000 + (int)((rgb[1] + m) * 255) * 0x100 + (int)((rgb[2] + m) * 255));
 }
 
+double	mtx_mul(double a[3][], int a_len, double b[3][], int b_len)
+{
+	int i, j;
+	int x, y;
+	double res[3][1];
+
+	while (i < b_len)
+	{
+		while (j < b_len)
+			while (k < 3)
+				res[j][0] += a[k][j] * b[]
+	}
+}
+
 void line_put(t_window *w, t_pixel a, t_pixel b)
 {
+	double a = 35, b = 45;
+	double rotX[][] = {{1, 		0, 		  0},
+					   {0, cos(a),	-sin(a)},
+					   {0, sin(a),	 cos(a)}};
+	double rotY[][] = {{cos(b), 0, sin(b)},
+					   {0, 		1, 		0},
+					   {-sin(b), 0, cos(b)}};
+	double rotZ[][] = {{cos(c), -sin(c), 0},
+					   {sin(c),	cos(c), 0},
+					   {0,		0,		1}};
 	double x;
 	double y;
 	double m;
