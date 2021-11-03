@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/02 18:23:52 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/11/03 15:08:12 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,13 @@ typedef struct s_window
 	void	*w;
 	int		width;
 	int		height;
+	int		a;
+	int		b;
+	int		c;
 	int		grid_w;
 	int 	grid_l;
 	int 	grid_h;
+	int 	scale;
 	int		tile_rot;
 	int		tile_width;
 	int		tile_height;
