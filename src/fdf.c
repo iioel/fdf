@@ -28,17 +28,17 @@ int catch_key(int t, t_window *w)
 		w->tile_rot++;
 	else if (t == 124 || t == 65363)
 		w->tile_rot--;
-	else if (t == 13) // w
+	else if (t == 13 || t == 119) // w
 		w->a++;
-	else if (t == 0) // a
+	else if (t == 0 || t == 97) // a
 		w->b--;
-	else if (t == 1) // s
+	else if (t == 1 || t == 115) // s
 		w->a--;
-	else if (t == 2) // d
+	else if (t == 2 || t == 100) // d
 		w->b++;
-	else if (t == 12) // q
+	else if (t == 12 || t == 113) // q
 		w->c--;
-	else if (t == 14) // e
+	else if (t == 14 || t == 101) // e
 		w->c++;
 	display(w);
 
@@ -91,9 +91,9 @@ t_pixel get_pixel(t_window *w, int x, int y, int z)
 	double a = w->a * M_PI / 180;
 	double b = w->b * M_PI / 180;
 	double c = w->c * M_PI / 180;
-	double point[3][1] = {{(double)x},
-					{(double)y},
-					{(double)z}};
+	double point[3][1] = {{((double)x - w->grid_w/2) * w->scale},
+					{((double)y - w->grid_l/2) * w->scale},
+					{((double)z - w->grid_h/2) * w->scale}};
 	double rotX[3][3] = {{1, 		0, 		  0},
 					   {0, cos(a),	-sin(a)},
 					   {0, sin(a),	 cos(a)}};
@@ -112,9 +112,9 @@ t_pixel get_pixel(t_window *w, int x, int y, int z)
 	mtx_mul(rotY, res, point);
 	mtx_mul(rotZ, point, res);
 	mtx_mul(msq, res, point);
-	d.x = (int)point[0][0] * w->scale;
-	d.y = (int)point[1][0] * w->scale;
-	printf("%dx%d : x%d y%d z%d\n", x, y, (int)point[0][0], (int)point[1][0], (int)point[2][0]);
+	d.x = (int)point[0][0] + w->width / 2;
+	d.y = (int)point[1][0] + w->height / 2;
+	//printf("%dx%d : x%d y%d z%d\n", x, y, (int)point[0][0], (int)point[1][0], (int)point[2][0]);
 	set_hsv(d.hsv_c, 60 + z * 26, 40, 50);//abs(z * 10), 75);
 	//set_hsv(d.hsv_c, 60, 0, 100);
 	return (d);
@@ -149,41 +149,43 @@ int hsv2rgb(short H, short S, short V)
 		set_rgb_d(rgb, 0, X, C);
 	else if (240 <= H && H <= 300)
 		set_rgb_d(rgb, X, 0, C);
-	else if (300 <= H && H <= 360)
-		set_rgb_d(rgb, C, 0, X);
+		else if (300 <= H && H <= 360)
+			set_rgb_d(rgb, C, 0, X);
 
 	return ((int)((rgb[0] + m) * 255) * 0x10000 + (int)((rgb[1] + m) * 255) * 0x100 + (int)((rgb[2] + m) * 255));
 }
 
 void line_put(t_window *w, t_pixel a, t_pixel b)
 {
-	double x;
-	double y;
-	double m;
-	double m_c[3];
-	short hsv_c[3];
-
-	x = 0.;
-	y = 0.;
-	m = (b.y - a.y) / (double)(b.x - a.x);
-	m_c[0] = (b.hsv_c[0] - a.hsv_c[0]) / (double)(b.x - a.x);
-	m_c[1] = (b.hsv_c[1] - a.hsv_c[1]) / (double)(b.x - a.x);
-	m_c[2] = (b.hsv_c[2] - a.hsv_c[2]) / (double)(b.x - a.x);
-	while ((int)x < (a.x - b.x))
+    int dx, dy, steps, i;
+	double x, y, x_i, y_i, hsv_i[3], hsv_c[3];
+    dx = b.x - a.x;  
+    dy = b.y - a.y;
+    x = a.x;
+    y = a.y;
+	hsv_c[0] = a.hsv_c[0];
+	hsv_c[1] = a.hsv_c[1];
+	hsv_c[2] = a.hsv_c[2];
+	if (abs(dx) > abs(dy))
+		steps = abs(dx);
+	else
+		steps = abs(dy);
+	x_i = dx / (double)steps;
+	y_i = dy / (double)steps;
+    hsv_i[0] = (b.hsv_c[0] - a.hsv_c[0]) / (double)steps;
+    hsv_i[1] = (b.hsv_c[1] - a.hsv_c[1]) / (double)steps;
+    hsv_i[2] = (b.hsv_c[2] - a.hsv_c[2]) / (double)steps;
+	printf ("steps: %d\n", steps);
+	i = 0;
+	while (i < steps)
 	{
-		y = m * x;
-		hsv_c[0] = b.hsv_c[0] + (short)(m_c[0] * x);
-		hsv_c[1] = b.hsv_c[1] + (short)(m_c[1] * x);
-		hsv_c[2] = b.hsv_c[2] + (short)(m_c[2] * x);
-		//printf("%d + %f, %d + %f, %d + %f = %x\n", hsv_c[0], m_c[0], hsv_c[1], m_c[1], hsv_c[2], m_c[2], hsv2rgb(hsv_c[0], hsv_c[1], hsv_c[2]));
-		if ((int)(y) - (int)(m * (x + 1)) <= 0)
-			while ((int)(y) - (int)(m * (x + 1)) <= 0)
-				mlx_pixel_put(w->cn, w->w, (int)x + b.x, (int)y++ + b.y, hsv2rgb(hsv_c[0], hsv_c[1], hsv_c[2]));
-		else
-			while ((int)(y) - (int)(m * (x + 1)) >= 0)
-				mlx_pixel_put(w->cn, w->w, (int)x + b.x, (int)y-- + b.y, hsv2rgb(hsv_c[0], hsv_c[1], hsv_c[2]));
-
-		x++;
+		x += x_i;
+		y += y_i;
+		hsv_c[0] += hsv_i[0];
+		hsv_c[1] += hsv_i[1];
+		hsv_c[2] += hsv_i[2];
+		mlx_pixel_put(w->cn, w->w, (int)x, (int)y, hsv2rgb(hsv_c[0], hsv_c[1], hsv_c[2]));
+		i++;
 	}
 }
 
@@ -195,7 +197,6 @@ int display(t_window *w)
 	short *t;
 
 	t = w->t;
-	//int 	t[4 * 4] = {0,0,0,0,0,5,6,0,0,7,8,0,0,0,0,0};
 
 	x = 0;
 	y = 0;
@@ -208,8 +209,8 @@ int display(t_window *w)
 		{
 			p = get_pixel(w, x, y, t[x + y * w->grid_w]);
 			mlx_pixel_put(w->cn, w->w, p.x, p.y, hsv2rgb(p.hsv_c[0], p.hsv_c[1], p.hsv_c[2]));
-		//	if (x != 0)
-		//		line_put(w, p, get_pixel(w, x - 1, y, t[x - 1 + y * w->grid_w]));
+			if (x != 0)
+				line_put(w, p, get_pixel(w, x - 1, y, t[x - 1 + y * w->grid_w]));
 			if (y != 0)
 				line_put(w, p, get_pixel(w, x, y - 1, t[x + (y - 1)* w->grid_w]));
 			y++;
@@ -265,9 +266,6 @@ short *read_file(char *f, t_window *w)
 		line = get_next_line(fd);
 		w->grid_w = j;
 		w->grid_l = i / (j);
-		//w->tile_width = 128 / (w->grid_w / 4);
-		w->tile_width = 7;
-		w->tile_height = w->tile_width / 1.7;
 		
 		//display(w, tab);
 	}
@@ -289,16 +287,15 @@ int main (int ac, char **av)
 		w->cn = mlx_init();
 		w->w = mlx_new_window(w->cn, w->width, w->height, "test");
 		w->t = read_file(av[1], w);
-		w->a = 0;
-		w->b = 0;
+		w->a = 35;
+		w->b = 45;
 		w->c = 0;
-		w->scale = 10;
-		//w->tile_width = 128 / (w->grid_w / 4);
-		//w->tile_height = 60 / (w->grid_h / 4);
+		w->scale = 20;
 		
 		display(w);
 
 		//mlx_loop_hook(w->w, display, w);
+		mlx_do_key_autorepeaton(w->cn);
 		mlx_key_hook(w->w, catch_key, w);
 		mlx_loop(w->cn);
 	}
