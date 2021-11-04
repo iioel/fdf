@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/03 15:08:12 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/11/04 16:19:29 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@ typedef struct s_window
 	int		tile_rot;
 	int		tile_width;
 	int		tile_height;
+	double	(*rotX)[3][3];
+	double	(*rotY)[3][3];
+	double	(*rotZ)[3][3];
 	short	*t;
 }				t_window;
 
