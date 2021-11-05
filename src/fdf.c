@@ -36,11 +36,11 @@ int catch_key(int t, t_window *w)
 		w->c -= 2;
 	else if (t == 14 || t == 101) // e
 		w->c += 2;
-	else if (t == 7) // x
+	else if (t == 7 || t == 120) // x
 		w->a = 0;
-	else if (t == 16) // y
+	else if (t == 16 || t == 121) // y
 		w->b = 0;
-	else if (t == 6) // z
+	else if (t == 6 || t == 122) // z
 		w->c = 0;
 	display(w);
 
@@ -294,8 +294,8 @@ int main (int ac, char **av)
 	if (ac == 2)
 	{
 		w = malloc(sizeof(t_window));
-		w->width = 2000;
-		w->height = 1200;
+		w->width = 1000;
+		w->height = 600;
 		w->cn = mlx_init();
 		w->w = mlx_new_window(w->cn, w->width, w->height, "test");
 		w->t = read_file(av[1], w);
@@ -306,9 +306,9 @@ int main (int ac, char **av)
 		
 		display(w);
 
-		//mlx_loop_hook(w->w, display, w);
+		//mlx_key_hook(w->w, catch_key, w);
+		mlx_hook(w->w, 2, (1L<<0), catch_key, w);
 		mlx_do_key_autorepeaton(w->cn);
-		mlx_hook(w->w, 2, 0, catch_key, w);
 		mlx_loop(w->cn);
 	}
 }
