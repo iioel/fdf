@@ -109,6 +109,8 @@ t_pixel get_pixel(t_window *w, int x, int y, int z)
 	return (d);
 }
 
+
+
 int hsv2rgb(short H, short S, short V)
 {
 	double			C;
@@ -179,6 +181,11 @@ void line_put(t_window *w, t_pixel a, t_pixel b)
 	}
 }
 
+void mlx_put_pixel_img(t_img img, t_pixel pixel)
+{
+
+}
+
 int display(t_window *w)
 {
 	t_pixel	p;
@@ -221,6 +228,7 @@ int display(t_window *w)
 		}
 		x++;
 	}
+	mlx_put_image_to_window(w->cn, w->w, w-.img, 0, 0);
 	return (0);
 }
 

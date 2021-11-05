@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/04 16:19:29 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/11/05 15:30:47 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,15 @@ typedef struct s_pixel
 	int y;
 	short hsv_c[3];
 }				t_pixel;
+
+typedef struct s_img
+{
+	void *img;
+	int pixel_bits;
+	int line_bytes;
+	int endian;
+	char *buffer;
+}
 
 int display(t_window *w);
 
