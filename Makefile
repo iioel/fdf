@@ -1,8 +1,10 @@
 NAME = fdf
 
 SRCS = fdf.c \
+	   file.c \
 	   gnl/get_next_line.c \
 	   gnl/get_next_line_utils.c
+#SRCS = test.c
 SRCS_DIR = src
 
 OBJS = $(SRCS:.c=.o)
@@ -19,7 +21,7 @@ LIBFT = libft.a
 LIBFT_DIR = libft
 
 CC = clang
-CFLAGS = -g -I $(HEADERS)
+CFLAGS = -g -I $(HEADERS) -fsanitize=address
 LFLAGS = $(CFLAGS) -lmlx -framework OpenGL -framework AppKit -L $(MLX_DIR) #-fsanitize=address -g
 
 UNAME = $(shell uname -s)

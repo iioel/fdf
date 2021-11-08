@@ -6,17 +6,29 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/05 15:30:47 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/11/08 03:04:28 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
+typedef struct s_img
+{
+	void *img;
+	char *addr;
+	int		width;
+	int		height;
+	int pixel_bits;
+	int line_bytes;
+	int endian;
+}				t_img;
+
 typedef struct s_window
 {
 	void	*cn;
 	void	*w;
+	t_img	*img;
 	int		width;
 	int		height;
 	int		a;
@@ -42,14 +54,6 @@ typedef struct s_pixel
 	short hsv_c[3];
 }				t_pixel;
 
-typedef struct s_img
-{
-	void *img;
-	int pixel_bits;
-	int line_bytes;
-	int endian;
-	char *buffer;
-}
 
 int display(t_window *w);
 

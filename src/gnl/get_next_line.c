@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:08:45 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/22 18:04:34 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/11/08 03:56:09 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ char	*ft_strchr(const char *s, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 // In this file
-int		read_line(int fd, char **readed);
-char	*return_line(char **readed);
-char	*clean(char **s);
+static int		read_line(int fd, char **readed);
+static char	*return_line(char **readed);
+static char	*clean(char **s);
 
 char	*get_next_line(int fd)
 {
@@ -43,7 +43,7 @@ char	*get_next_line(int fd)
 	return (clean(&readed));
 }
 
-int	read_line(int fd, char **readed)
+static int	read_line(int fd, char **readed)
 {
 	char	buf[BUFFER_SIZE];
 	int		total_buf;
@@ -68,7 +68,7 @@ int	read_line(int fd, char **readed)
 	return (1);
 }
 
-char	*return_line(char **readed)
+static char	*return_line(char **readed)
 {
 	char	*out;
 	char	*tmp;
@@ -94,7 +94,7 @@ char	*return_line(char **readed)
 	return (out);
 }
 
-char	*clean(char **s)
+static char	*clean(char **s)
 {
 	if (*s)
 		free(*s);
