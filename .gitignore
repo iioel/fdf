@@ -3,3 +3,4 @@ fdf
 minilibx
 includes/mlx.h
 libft/libft.a
+*.swp

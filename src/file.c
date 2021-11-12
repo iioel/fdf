@@ -6,7 +6,7 @@
 /*   By: yoel <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 03:14:10 by yoel              #+#    #+#             */
-/*   Updated: 2021/11/08 18:26:21 by yoel             ###   ########.fr       */
+/*   Updated: 2021/11/12 12:48:39 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	ft_atoinskip(char **str)
 	factor = 1;
 	res = 0;
 	while ((**str == '\t' || **str == '\n' || **str == '\v'
-		|| **str == '\f' || **str == '\r' || **str == ' ') && **str)
+			|| **str == '\f' || **str == '\r' || **str == ' ') && **str)
 		(*str)++;
 	if (**str == '+' || **str == '-')
 		if (*((*str)++) == '-')
@@ -64,9 +64,9 @@ static int	ft_atoinskip(char **str)
 
 static int	read_line(char *line, short **tab, int *tab_i, t_window *w)
 {
-	int j;
-	int nb_word;
-	short *temp;
+	int		j;
+	int		nb_word;
+	short	*temp;
 
 	nb_word = ft_strcntword(line, ' ');
 	temp = malloc((*tab_i + nb_word) * sizeof(short));
@@ -85,26 +85,23 @@ static int	read_line(char *line, short **tab, int *tab_i, t_window *w)
 			w->grid_h = (*tab)[*tab_i - 1];
 	}
 	if (! w->grid_w)
-	{
 		w->grid_w = nb_word;
-		w->scale = (w->width - w->width * 0.3) / w->grid_w;
-	}
-	w->grid_l = *tab_i / w->grid_w;	
+	w->scale = (w->width - w->width * 0.3) / w->grid_w;
+	w->grid_l = *tab_i / w->grid_w;
 	return (0);
 }
 
-short *read_file(char *f, t_window *w)
+short	*read_file(char *f, t_window *w)
 {
-	int fd;
-	int i;
-	char *line;
-	short *tab;
+	int		fd;
+	int		i;
+	char	*line;
+	short	*tab;
 
 	i = 0;
 	w->grid_h = 0;
 	fd = open(f, O_RDONLY);
 	tab = NULL;
-
 	line = get_next_line(fd);
 	while (line)
 	{

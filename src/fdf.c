@@ -8,64 +8,51 @@
 #include "libft.h"
 
 void mlx_pixel_put_img(t_img *img, int x, int y, unsigned int color);
-short *read_file(char *f, t_window *w);
 
 int catch_key(int t, t_window *w)
 {
 	printf("key : %d\n", t);
-	if (t == 53 || t == 65307)
+	if (t == 53 || t == 65307) // ESC
 	{
-		mlx_destroy_window(w->cn, w->w);
+		mlx_destroy_window(w->mlx, w->w);
 		exit(0);
 	}
-	else if (t == 8)
-		mlx_clear_window(w->cn, w->w);
+	else if (t == 8) // c
+		mlx_clear_window(w->mlx, w->w);
 	else if (t == 15 || t == 114)
 		display(w);
-	else if (t == 126 || t == 65362)
+	else if (t == 126 || t == 65362) // UP
 		w->scale++;
-	else if (t == 125 || t == 65364)
+	else if (t == 125 || t == 65364) // DOWN
 		w->scale--;
 	else if (t == 13 || t == 119) // w
-		w->a += 2;
+		w->alpha += 2;
 	else if (t == 0 || t == 97) // a
-		w->b -= 2;
+		w->beta -= 2;
 	else if (t == 1 || t == 115) // s
-		w->a -= 2;
+		w->alpha -= 2;
 	else if (t == 2 || t == 100) // d
-		w->b += 2;
+		w->beta += 2;
 	else if (t == 12 || t == 113) // q
-		w->c -= 2;
+		w->gamma -= 2;
 	else if (t == 14 || t == 101) // e
-		w->c += 2;
+		w->gamma += 2;
 	else if (t == 7 || t == 120) // x
-		w->a = 0;
+		w->alpha = 0;
 	else if (t == 16 || t == 121) // y
-		w->b = 0;
+		w->beta = 0;
 	else if (t == 6 || t == 122) // z
-		w->c = 0;
+		w->gamma = 0;
 	display(w);
 
 	return (0);
 }
 
-void	set_hsv(short hsv_c[3], int H, double S, double V)
+void	mtx_mul(double a[3][3], double b[3][1], double res[3][1])
 {
-	hsv_c[0] = H;
-	hsv_c[1] = S;
-	hsv_c[2] = V;
-}
-
-void	set_hsv_d(double hsv_c[3], double H, double S, double V)
-{
-	hsv_c[0] = H;
-	hsv_c[1] = S;
-	hsv_c[2] = V;
-}
-
-void mtx_mul(double a[3][3], double b[3][1], double res[3][1])
-{
-	int i, j, k;
+	int	i;
+	int	j;
+	int	k;
 
 	i = 0;
 	while (i < 3)
@@ -86,83 +73,41 @@ void mtx_mul(double a[3][3], double b[3][1], double res[3][1])
 	}
 }
 
-t_pixel get_pixel(t_window *w, int x, int y, int z)
+t_pixel	get_pixel(t_window *w, int x, int y, int z)
 {
 	t_pixel	d;
-	double		x_e;
-	double		y_e;
-	double point[3][1] = {{((double)x - w->grid_w/2) * w->scale},
-					{((double)y - w->grid_l/2) * w->scale},
-					{((double)z - w->grid_h/2) * w->scale}};
-	double msq[3][3] = {{1, 0, 0},
-					  {0, 1, 0},
-					  {0, 0, 0}};
-	double res[3][1] = {{0},{0},{0}};
-	
+	double	x_e;
+	double	y_e;
+	double	point[3][1];
+	double	res[3][1] = {{0},{0},{0}};
+
+	point[0][0] = ((double)x - w->grid_w / 2) * w->scale;
+	point[1][0] = ((double)y - w->grid_l / 2) * w->scale;
+	point[2][0] = ((double)z - w->grid_h / 2) * w->scale;
 	mtx_mul(*(w->rotX), point, res);
 	mtx_mul(*(w->rotY), res, point);
 	mtx_mul(*(w->rotZ), point, res);
-	mtx_mul(msq, res, point);
-	d.x = (int)point[0][0] + w->width / 2;
-	d.y = (int)point[1][0] + w->height / 2;
-	//printf("%dx%d : x%d y%d z%d\n", x, y, (int)point[0][0], (int)point[1][0], (int)point[2][0]);
-	set_hsv(d.hsv_c, 60 + z * 26, 40, 100);//abs(z * 10), 75);
+	d.x = (int)res[0][0] + w->width / 2;
+	d.y = (int)res[1][0] + w->height / 2;
+	set_hsv(d.hsv_c, 60 + z * 26, 40, 100);
 	//set_hsv(d.hsv_c, 60, 0, 100);
 	return (d);
 }
 
-
-
-int hsv2rgb(short H, short S, short V)
+void	line_put(t_window *w, t_pixel a, t_pixel b)
 {
-	double			C;
-	double			X;
-	double			m;
-	double			SV[2];
-	double			rgb[3];
-
-	SV[0] = S / 100.0;
-	SV[1] = V / 100.0;
-	while (H < 0 || H > 360)
-		if (H < 0)
-			H *= -1;
-		else
-			H /= 360;
-	C = SV[1] * SV[0];
-	X = C * (1 - abs((H / 60) % 2 - 1));
-	m = SV[1] - C;
-
-	if (0 <= H && H <= 60)
-		set_hsv_d(rgb, C, X, 0);
-	else if (60 <= H && H <= 120)
-		set_hsv_d(rgb, X, C, 0);
-	else if (120 <= H && H <= 180)
-		set_hsv_d(rgb, 0, C, X);
-	else if (180 <= H && H <= 240)
-		set_hsv_d(rgb, 0, X, C);
-	else if (240 <= H && H <= 300)
-		set_hsv_d(rgb, X, 0, C);
-		else if (300 <= H && H <= 360)
-			set_hsv_d(rgb, C, 0, X);
-	return ((int)((rgb[0] + m) * 255) * 0x10000 + (int)((rgb[1] + m) * 255) * 0x100 + (int)((rgb[2] + m) * 255));
-}
-
-void line_put(t_window *w, t_pixel a, t_pixel b)
-{
-    int dx, dy, steps, i;
-	double x, y, x_i, y_i, hsv_c[3];
-	double hsv_i[3];
-    dx = b.x - a.x;  
-    dy = b.y - a.y;
+    int		steps, i;
+	double	x, y, x_i, y_i, hsv_c[3];
+	double	hsv_i[3];
     x = a.x;
     y = a.y;
 	set_hsv_d(hsv_c, a.hsv_c[0], a.hsv_c[1], a.hsv_c[2]);
-	if (abs(dx) > abs(dy))
-		steps = abs(dx);
+	if (abs(b.x - a.x) > abs(b.y - a.y))
+		steps = abs(b.x - a.x);
 	else
-		steps = abs(dy);
-	x_i = dx / (double)steps;
-	y_i = dy / (double)steps;
+		steps = abs(b.y - a.y);
+	x_i = (b.x - a.x) / (double)steps;
+	y_i = (b.y - a.y) / (double)steps;
 	set_hsv_d(hsv_i, (b.hsv_c[0] - a.hsv_c[0]) / (double)steps, (b.hsv_c[1] - a.hsv_c[1]) / (double)steps, (b.hsv_c[2] - a.hsv_c[2]) / (double)steps);
 	i = 0;
 	while (i < steps)
@@ -177,10 +122,10 @@ void line_put(t_window *w, t_pixel a, t_pixel b)
 	}
 }
 
-void mlx_pixel_put_img(t_img *img, int x, int y, unsigned int color)
+void	mlx_pixel_put_img(t_img *img, int x, int y, unsigned int color)
 {
-	char *p_loc;
-	
+	char	*p_loc;
+
 	if (x >= 0 && x < img->width && y >= 0 && y < img->height)
 	{
 		p_loc = img->addr + (y * img->line_bytes + x * (img->pixel_bits / 8));
@@ -188,16 +133,16 @@ void mlx_pixel_put_img(t_img *img, int x, int y, unsigned int color)
 	}
 }
 
-int display(t_window *w)
+int	display(t_window *w)
 {
 	t_pixel	p;
-	t_img img;
+	t_img	img;
 	int		x;
 	int		y;
-	short *t;
-	double a = w->a * M_PI / 180;
-	double b = w->b * M_PI / 180;
-	double c = w->c * M_PI / 180;
+	short	*t;
+	double	a = w->alpha * M_PI / 180;
+	double	b = w->beta * M_PI / 180;
+	double	c = w->gamma * M_PI / 180;
 
 	t = w->t;
 
@@ -205,21 +150,21 @@ int display(t_window *w)
 	y = 0;
 	img.width = w->width;
 	img.height = w->height;
-	img.img = mlx_new_image(w->cn, img.width, img.height);
+	img.img = mlx_new_image(w->mlx, img.width, img.height);
 	img.pixel_bits = 4 * 8;
 	img.line_bytes = 4 * w->width;
 	img.endian = 0;
 	img.addr = mlx_get_data_addr(img.img, &img.pixel_bits, &img.line_bytes, &img.endian);
 	w->img = &img;
 	double rotX[3][3] = {{		1,		 0, 	  0},
-			   {		0,	cos(a),	-sin(a)},
-			   {		0,	sin(a),	 cos(a)}};
+						 {		0,	cos(a),	-sin(a)},
+						 {		0,	sin(a),	 cos(a)}};
 	double rotY[3][3] = {{ cos(b),		 0,  sin(b)},
-			   {		0,		 1, 	  0},
-			   {-sin(b),		 0,  cos(b)}};
+						 {		0,		 1, 	  0},
+						 {-sin(b),		 0,  cos(b)}};
 	double rotZ[3][3] = {{ cos(c), -sin(c),		  0},
-			   { sin(c),	cos(c),		  0},
-			   {		0,		 0,		  1}};
+						 { sin(c),	cos(c),		  0},
+						 {		0,		 0,		  1}};
 	w->rotX = &rotX;
 	w->rotY = &rotY;
 	w->rotZ = &rotZ;
@@ -238,81 +183,27 @@ int display(t_window *w)
 		}
 		x++;
 	}
-	mlx_clear_window(w->cn, w->w);
-	mlx_put_image_to_window(w->cn, w->w, img.img, 0, 0);
-	mlx_destroy_image(w->cn, img.img);
+	mlx_clear_window(w->mlx, w->w);
+	mlx_put_image_to_window(w->mlx, w->w, img.img, 0, 0);
+	mlx_destroy_image(w->mlx, img.img);
 	return (0);
 }
 
-// short *read_file(char *f, t_window *w)
-// {
-// 	int fd;
-// 	int i;
-// 	int j;
-// 	char *line;
-// 	char **t_line;
-// 	short *tab;
-// 	short *temp;
-// 
-// 
-// 	i = 0;
-// 	w->grid_h = 0;
-// 	fd = open(f, O_RDONLY);
-// 	tab = NULL;
-// 
-// 	line = get_next_line(fd);
-// 	while (line)
-// 	{
-// 		j = 0;
-// 		t_line = ft_split(line, ' ');
-// 		if (! t_line)
-// 			exit(1);
-// 		while (t_line[j])
-// 			j++;
-// 		temp = malloc((i + j) * sizeof(short));
-// 		if (!temp)
-// 			return (NULL);
-// 		j = -1;
-// 		while (++j < i)
-// 			temp[j] = tab[j];
-// 		free(tab);
-// 		tab = temp;
-// 		j = 0;
-// 		while (t_line[j])
-// 		{
-// 			tab[i] = ft_atoi(t_line[j]);
-// 			if (tab[i++] > w->grid_h)
-// 				w->grid_h = tab[i - 1];
-// 			free(t_line[j++]);
-// 		}
-// 		free(t_line);
-// 		free(line);
-// 		line = get_next_line(fd);
-// 		//display(w, tab);
-// 	}
-// 	w->grid_w = j;
-// 	w->grid_l = i / (j);	
-// 	free(line);
-// 	w->tile_rot = 0;
-// 	return (tab);
-// }
-
-
 int main (int ac, char **av)
 {
-	t_window *w;
-	//short *t;
+	t_window	*w;
 
 	if (ac == 2)
 	{
 		w = malloc(sizeof(t_window));
 		w->width = 1000;
 		w->height = 600;
-		w->cn = mlx_init();
-		w->w = mlx_new_window(w->cn, w->width, w->height, "test");
-		w->a = 35;
-		w->b = 45;
-		w->c = 0;
+		w->mlx = mlx_init();
+		w->w = mlx_new_window(w->mlx, w->width, w->height, "test");
+		w->alpha = 35;
+		w->beta = 45;
+		w->gamma = 0;
+		w->grid_w = 0;
 		w->grid_w = 0;
 		w->t = read_file(av[1], w);
 		
@@ -320,7 +211,7 @@ int main (int ac, char **av)
 
 		//mlx_key_hook(w->w, catch_key, w);
 		mlx_hook(w->w, 2, (1L<<0), catch_key, w);
-		mlx_do_key_autorepeaton(w->cn);
-		mlx_loop(w->cn);
+		mlx_do_key_autorepeaton(w->mlx);
+		mlx_loop(w->mlx);
 	}
 }

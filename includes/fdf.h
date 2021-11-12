@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/08 03:04:28 by yoel             ###   ########.fr       */
+/*   Updated: 2021/11/12 13:05:39 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,18 @@ typedef struct s_img
 
 typedef struct s_window
 {
-	void	*cn;
+	void	*mlx;
 	void	*w;
 	t_img	*img;
 	int		width;
 	int		height;
-	int		a;
-	int		b;
-	int		c;
+	int		alpha;
+	int		beta;
+	int		gamma;
 	int		grid_w;
 	int 	grid_l;
 	int 	grid_h;
 	int 	scale;
-	int		tile_rot;
-	int		tile_width;
-	int		tile_height;
 	double	(*rotX)[3][3];
 	double	(*rotY)[3][3];
 	double	(*rotZ)[3][3];
@@ -55,6 +52,18 @@ typedef struct s_pixel
 }				t_pixel;
 
 
-int display(t_window *w);
+int		display(t_window *w);
+
+// file.c
+short 	*read_file(char *f, t_window *w);
+
+// color.c
+void	set_hsv(short hsv_c[3], int H, double S, double V);
+void	set_hsv_d(double hsv_c[3], double H, double S, double V);
+void	conv_rgb(double rgb[3], short h, double c, double x);
+int		hsv2rgb(short h, short s, short v);
+
+// math.c
+int		ft_abs(int i);
 
 #endif

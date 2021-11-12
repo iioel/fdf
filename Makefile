@@ -2,6 +2,8 @@ NAME = fdf
 
 SRCS = fdf.c \
 	   file.c \
+	   color.c \
+	   math.c \
 	   gnl/get_next_line.c \
 	   gnl/get_next_line_utils.c
 #SRCS = test.c
