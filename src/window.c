@@ -1,20 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   math.c                                             :+:      :+:    :+:   */
+/*   window.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/12 13:02:45 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/12 16:46:20 by ycornamu         ###   ########.fr       */
+/*   Created: 2021/11/12 14:42:59 by ycornamu          #+#    #+#             */
+/*   Updated: 2021/11/12 16:52:28 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int	ft_abs(int i)
+t_window	*create_win(int x, int y, char *name)
 {
-	if (i < 0)
-		return (-i);
-	return (i);
+	t_window	*w;
+
+	w = ft_calloc(1, sizeof(t_window));
+	w->img = NULL;
+	w->obj = NULL;
+	w->scale = 1;
+	w->width = x;
+	w->height = y;
+	w->mlx = mlx_init();
+	w->w = mlx_new_window(w->mlx, x, y, name);
+	return (w);
 }

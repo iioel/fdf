@@ -6,7 +6,7 @@
 /*   By: yoel <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 03:14:10 by yoel              #+#    #+#             */
-/*   Updated: 2021/11/12 12:48:39 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/11/12 16:31:47 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,56 +62,54 @@ static int	ft_atoinskip(char **str)
 	return (res * factor);
 }
 
-static int	read_line(char *line, short **tab, int *tab_i, t_window *w)
+static int	read_line(char *line, short **grid, int *grid_len, t_obj *obj)
 {
 	int		j;
 	int		nb_word;
 	short	*temp;
 
 	nb_word = ft_strcntword(line, ' ');
-	temp = malloc((*tab_i + nb_word) * sizeof(short));
+	temp = malloc((*grid_len + nb_word) * sizeof(short));
 	if (!temp)
 		return (1);
 	j = -1;
-	while (++j < *tab_i)
-		temp[j] = (*tab)[j];
-	free(*tab);
-	*tab = temp;
+	while (++j < *grid_len)
+		temp[j] = (*grid)[j];
+	free(*grid);
+	*grid = temp;
 	j += nb_word;
-	while (*tab_i < j)
+	while (*grid_len < j)
 	{
-		(*tab)[*tab_i] = ft_atoinskip(&line);
-		if ((*tab)[(*tab_i)++] > w->grid_h)
-			w->grid_h = (*tab)[*tab_i - 1];
+		(*grid)[*grid_len] = ft_atoinskip(&line);
+		if ((*grid)[(*grid_len)++] > obj->height)
+			obj->height = (*grid)[*grid_len - 1];
 	}
-	if (! w->grid_w)
-		w->grid_w = nb_word;
-	w->scale = (w->width - w->width * 0.3) / w->grid_w;
-	w->grid_l = *tab_i / w->grid_w;
+	if (! obj->width)
+		obj->width = nb_word;
+	//w->scale = (w->width - w->width * 0.3) / w->grid_w;
+	obj->length = *grid_len / obj->width;
 	return (0);
 }
 
-short	*read_file(char *f, t_window *w)
+int	read_file(char *f, t_obj *obj)
 {
 	int		fd;
-	int		i;
+	int		grid_len;
 	char	*line;
-	short	*tab;
+	short	*grid;
 
-	i = 0;
-	w->grid_h = 0;
+	grid_len = 0;
 	fd = open(f, O_RDONLY);
-	tab = NULL;
+	grid = NULL;
 	line = get_next_line(fd);
 	while (line)
 	{
-		if (read_line(line, &tab, &i, w))
-			return (NULL);
+		if (read_line(line, &grid, &grid_len, obj))
+			return (1);
 		free(line);
 		line = get_next_line(fd);
-		w->t = tab;
-		//display(w);
+		obj->grid = grid;
 	}
 	free(line);
-	return (tab);
+	return (0);
 }

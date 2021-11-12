@@ -4,6 +4,11 @@ SRCS = fdf.c \
 	   file.c \
 	   color.c \
 	   math.c \
+	   image.c \
+	   mlx_utils.c \
+	   mtx.c \
+	   obj.c \
+	   window.c \
 	   gnl/get_next_line.c \
 	   gnl/get_next_line_utils.c
 #SRCS = test.c
@@ -23,7 +28,7 @@ LIBFT = libft.a
 LIBFT_DIR = libft
 
 CC = clang
-CFLAGS = -g -I $(HEADERS) -fsanitize=address
+CFLAGS = -I $(HEADERS) -g -fsanitize=address
 LFLAGS = $(CFLAGS) -lmlx -framework OpenGL -framework AppKit -L $(MLX_DIR) #-fsanitize=address -g
 
 UNAME = $(shell uname -s)

@@ -6,12 +6,16 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/12 13:05:39 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/11/12 16:41:31 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
+
+# include "libft.h"
+# include <mlx.h>
+# include <math.h>
 
 typedef struct s_img
 {
@@ -24,6 +28,24 @@ typedef struct s_img
 	int endian;
 }				t_img;
 
+typedef struct s_obj
+{
+	int		height;
+	int		width;
+	int 	length;
+	int		anglx;
+	int		angly;
+	int		anglz;
+	double	rotx[3][3];
+	double	roty[3][3];
+	double	rotz[3][3];
+	short	*grid;
+	int		offx;
+	int		offy;
+	int		offz;
+	t_img	*img;
+}				t_obj;
+
 typedef struct s_window
 {
 	void	*mlx;
@@ -31,17 +53,8 @@ typedef struct s_window
 	t_img	*img;
 	int		width;
 	int		height;
-	int		alpha;
-	int		beta;
-	int		gamma;
-	int		grid_w;
-	int 	grid_l;
-	int 	grid_h;
+	t_obj	*obj;
 	int 	scale;
-	double	(*rotX)[3][3];
-	double	(*rotY)[3][3];
-	double	(*rotZ)[3][3];
-	short	*t;
 }				t_window;
 
 typedef struct s_pixel
@@ -55,7 +68,7 @@ typedef struct s_pixel
 int		display(t_window *w);
 
 // file.c
-short 	*read_file(char *f, t_window *w);
+int	read_file(char *f, t_obj *obj);
 
 // color.c
 void	set_hsv(short hsv_c[3], int H, double S, double V);
@@ -65,5 +78,28 @@ int		hsv2rgb(short h, short s, short v);
 
 // math.c
 int		ft_abs(int i);
+
+// image.c
+t_img	*create_image(t_window *w);
+
+// mlx_utils.c
+void	mlx_pixel_put_img(t_img *img, int x, int y, unsigned int color);
+void	rotate(double *x, double *y, double *z, t_obj *obj);
+t_pixel	get_pixel(t_window *w, int x, int y, int z);
+void	line_put(t_window *w, t_pixel a, t_pixel b);
+
+// mtx.c
+void	mtx_mul(double a[3][3], double b[3][1]);
+void	mtx_setline(double line[3][3], double a, double b, double c);
+
+// obj.c
+t_obj	*create_obj(char *file);
+void	render_obj(t_window *w);
+void	update_mtx(t_obj *obj);
+void	add_angles(int alpha, int beta, int gamma, t_obj *obj);
+void	display_obj(t_window *w);
+
+// window.c
+t_window	*create_win(int x, int y, char *name);
 
 #endif
