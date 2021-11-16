@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 11:50:19 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/14 20:03:08 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/11/16 10:40:38 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,16 @@ static size_t	ft_strcntword(char const *s, char sep)
 
 	i = 0;
 	nb_words = 0;
-	while (*(s + i) != 0)
+	while (*(s + i))
 	{
-		if ((*(s + i) == sep || i == 0)
-			&& *(s + i + 1) != 0 && *(s + i + 1) != sep)
+		while (*(s + i) == sep && *(s + i))
+			i++;
+		if (*(s + i))
+		{
+			while (*(s + i) != sep && *(s + i))
+				i++;
 			nb_words++;
-		i++;
+		}
 	}
 	return (nb_words);
 }
