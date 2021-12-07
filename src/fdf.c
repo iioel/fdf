@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 20:14:05 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/07 23:48:43 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/08 00:24:25 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	catch_key(int t, t_window *w)
 int	catch_button_press(int t, t_window *w)
 {
 	w = save_window(NULL);
-	printf("button : %d\n", t);
+	printf("pressed button : %d\n", t);
 	if (t == 5)
 		w->scale *= 1.05;
 	else if (t == 4)
@@ -85,13 +85,9 @@ int	catch_button_press(int t, t_window *w)
 int	catch_button_release(int t, t_window *w)
 {
 	w = save_window(NULL);
-	printf("button : %d\n", t);
-	if (t == 5)
-		w->scale *= 1.05;
-	else if (t == 4)
-		w->scale *= (1 / 1.05);
-	else if (t == 1)
-		w->moving = 1;
+	printf("released button : %d\n", t);
+	if (t == 1)
+		w->moving = 0;
 	update_mtx(w->obj);
 	render_obj(w);
 	display_obj(w);
@@ -100,10 +96,33 @@ int	catch_button_release(int t, t_window *w)
 
 int	catch_mouse_moves(int x, int y, t_window *w)
 {
+	static int x_from = -1;
+	static int y_from = -1;
+	static int org_off_x = -1;
+	static int org_off_y = -1;
 	w = save_window(NULL);
 	if (w->moving)
 	{
+		if (x_from == -1)
+		{
+			x_from = x;
+			y_from = y;
+			org_off_x = w->offx;
+			org_off_y = w->offy;
+		}
+		w->offx = org_off_x + x - x_from;
+		w->offy = org_off_y + y - y_from;
 		printf("move: %d x %d\n", x, y);
+		render_obj(w);
+		display_obj(w);
+	}
+	else if (x_from != -1)
+	{
+		x_from = -1;
+		y_from = -1;
+		org_off_x = 0;
+		org_off_y = 0;
+		printf("move: reseted\n");
 	}
 	return (0);
 }
@@ -121,7 +140,9 @@ int	main(int ac, char **av)
 		render_obj(w);
 		display_obj(w);
 		mlx_hook(w->w, 2, (1L << 0), catch_key, w);
-		mlx_hook(w->w, 4, (1L << 13), catch_button_press, w);
+		mlx_hook(w->w, 4, (1L << 2), catch_button_press, w);
+		mlx_hook(w->w, 5, (1L << 3), catch_button_release, w);
+		mlx_hook(w->w, 6, (1L << 8), catch_mouse_moves, w);
 		mlx_hook(w->w, 6, (1L << 6), catch_mouse_moves, w);
 		mlx_do_key_autorepeaton(w->mlx);
 		mlx_loop(w->mlx);
