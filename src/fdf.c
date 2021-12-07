@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fdf.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/07 20:14:05 by ycornamu          #+#    #+#             */
+/*   Updated: 2021/12/07 20:14:25 by ycornamu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <mlx.h>
 #include <math.h>
 #include <stdio.h>
@@ -7,7 +19,7 @@
 #include "fdf.h"
 #include "libft.h"
 
-int catch_key(int t, t_window *w)
+int	catch_key(int t, t_window *w)
 {
 	printf("key : %d\n", t);
 	if (t == 53 || t == 65307) // ESC
@@ -17,8 +29,6 @@ int catch_key(int t, t_window *w)
 	}
 	else if (t == 8) // c
 		mlx_clear_window(w->mlx, w->w);
-//	else if (t == 15 || t == 114)
-//		display(w);
 	else if (t == 126 || t == 65362) // UP
 		w->scale++;
 	else if (t == 125 || t == 65364) // DOWN
@@ -41,30 +51,25 @@ int catch_key(int t, t_window *w)
 		w->obj->angly = 0;
 	else if (t == 6 || t == 122) // z
 		w->obj->anglz = 0;
-	//display(w);
 	update_mtx(w->obj);
 	render_obj(w);
 	display_obj(w);
-
 	return (0);
 }
 
-int main (int ac, char **av)
+int	main(int ac, char **av)
 {
 	t_window	*w;
 
 	if (ac == 2)
 	{
-		w = create_win(1000, 600, "fdf");
+		w = create_win(2000, 1200, "fdf");
 		w->obj = create_obj(av[1]);
 		w->scale = (w->width - w->width * 0.3) / w->obj->width;
 		render_obj(w);
 		display_obj(w);
-
-		//display(w);
-
 		//mlx_key_hook(w->w, catch_key, w);
-		mlx_hook(w->w, 2, (1L<<0), catch_key, w);
+		mlx_hook(w->w, 2, (1L << 0), catch_key, w);
 		mlx_do_key_autorepeaton(w->mlx);
 		mlx_loop(w->mlx);
 	}

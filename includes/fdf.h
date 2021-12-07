@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/12 16:41:31 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/07 20:27:57 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,17 @@ typedef struct s_pixel
 	short hsv_c[3];
 }				t_pixel;
 
+typedef struct s_line
+{
+	t_pixel	a;
+	t_pixel b;
+	int x;
+	int y;
+	int x_i;
+	int y_i;
+	short hsv_c[3];
+	short hsv_c_i[3];
+}				t_line;
 
 int		display(t_window *w);
 

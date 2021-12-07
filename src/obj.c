@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 13:50:22 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/12 17:14:23 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/07 20:20:10 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,26 @@ t_obj	*create_obj(char *file)
 	return (obj);
 }
 
+void	print_pixel(t_window *w, t_obj *obj, int x, int y)
+{
+	t_pixel	p;
+
+	p = get_pixel(w, x, y, obj->grid[x + y * obj->width]);
+	mlx_pixel_put_img(obj->img, p.x, p.y,
+		hsv2rgb(p.hsv_c[0], p.hsv_c[1], p.hsv_c[2]));
+	if (x != 0)
+		line_put(w, p,
+			get_pixel(w, x - 1, y, obj->grid[x - 1 + y * obj->width]));
+	if (y != 0)
+		line_put(w, p,
+			get_pixel(w, x, y - 1, obj->grid[x + (y - 1) * obj->width]));
+}
+
 void	render_obj(t_window *w)
 {
 	int		x;
 	int		y;
 	t_obj	*obj;
-	t_pixel	p;
 
 	x = 0;
 	obj = w->obj;
@@ -50,12 +64,7 @@ void	render_obj(t_window *w)
 		y = 0;
 		while (y < obj->length)
 		{
-			p = get_pixel(w, x, y, obj->grid[x + y * obj->width]);
-			mlx_pixel_put_img(obj->img, p.x, p.y, hsv2rgb(p.hsv_c[0], p.hsv_c[1], p.hsv_c[2]));
-			if (x != 0)
-				line_put(w, p, get_pixel(w, x - 1, y, obj->grid[x - 1 + y * obj->width]));
-			if (y != 0)
-				line_put(w, p, get_pixel(w, x, y - 1, obj->grid[x + (y - 1) * obj->width]));
+			print_pixel(w, obj, x, y);
 			y++;
 		}
 		x++;

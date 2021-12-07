@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 15:13:00 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/12 17:04:41 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/07 20:27:52 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,9 @@ void	line_put(t_window *w, t_pixel a, t_pixel b)
 		steps = ft_abs(b.y - a.y);
 	x_i = (b.x - a.x) / (double)steps;
 	y_i = (b.y - a.y) / (double)steps;
-	set_hsv_d(hsv_i, (b.hsv_c[0] - a.hsv_c[0]) / (double)steps, (b.hsv_c[1] - a.hsv_c[1]) / (double)steps, (b.hsv_c[2] - a.hsv_c[2]) / (double)steps);
+	set_hsv_d(hsv_i, (b.hsv_c[0] - a.hsv_c[0]) / (double)steps,
+			(b.hsv_c[1] - a.hsv_c[1]) / (double)steps,
+			(b.hsv_c[2] - a.hsv_c[2]) / (double)steps);
 	i = 0;
 	while (i < steps)
 	{
