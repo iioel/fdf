@@ -6,7 +6,7 @@
 /*   By: yoel <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 03:14:10 by yoel              #+#    #+#             */
-/*   Updated: 2021/11/12 16:31:47 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/07 20:55:42 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ static int	read_line(char *line, short **grid, int *grid_len, t_obj *obj)
 	}
 	if (! obj->width)
 		obj->width = nb_word;
-	//w->scale = (w->width - w->width * 0.3) / w->grid_w;
 	obj->length = *grid_len / obj->width;
 	return (0);
 }

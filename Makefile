@@ -6,8 +6,10 @@ SRCS = fdf.c \
 	   math.c \
 	   image.c \
 	   mlx_utils.c \
+	   line.c \
 	   mtx.c \
 	   obj.c \
+	   obj_ext.c \
 	   window.c \
 	   gnl/get_next_line.c \
 	   gnl/get_next_line_utils.c
@@ -30,6 +32,7 @@ LIBFT_DIR = libft
 CC = clang
 CFLAGS = -I $(HEADERS) -g -fsanitize=address
 LFLAGS = $(CFLAGS) -lmlx -framework OpenGL -framework AppKit -L $(MLX_DIR) #-fsanitize=address -g
+#LFLAGS = $(CFLAGS) -lmlx -L $(MLX_DIR)#-fsanitize=address -g
 
 UNAME = $(shell uname -s)
 ifeq ($(UNAME), Linux)
@@ -55,6 +58,7 @@ mlx:
 	@echo "=========== Compiling MinilibX ==========="
 	$(MAKE) -C $(MLX_DIR)
 	cp $(MLX_DIR)/mlx.h $(HEADERS)/mlx.h
+#	cp $(MLX_DIR)/libmlx.dylib .
 	@echo "========= End Compiling MinilibX ========="
 
 mlx_clean:

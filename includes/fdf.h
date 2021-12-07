@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/07 20:27:57 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/07 23:42:03 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,10 @@ typedef struct s_window
 	int		width;
 	int		height;
 	t_obj	*obj;
-	int 	scale;
+	int		offx;
+	int		offy;
+	int		moving;
+	double 	scale;
 }				t_window;
 
 typedef struct s_pixel
@@ -66,14 +69,13 @@ typedef struct s_pixel
 
 typedef struct s_line
 {
-	t_pixel	a;
-	t_pixel b;
-	int x;
-	int y;
-	int x_i;
-	int y_i;
-	short hsv_c[3];
-	short hsv_c_i[3];
+	int		steps;
+	double	x;
+	double	y;
+	double	x_i;
+	double	y_i;
+	double	hsv_c[3];
+	double	hsv_c_i[3];
 }				t_line;
 
 int		display(t_window *w);
@@ -97,6 +99,9 @@ t_img	*create_image(t_window *w);
 void	mlx_pixel_put_img(t_img *img, int x, int y, unsigned int color);
 void	rotate(double *x, double *y, double *z, t_obj *obj);
 t_pixel	get_pixel(t_window *w, int x, int y, int z);
+
+// line.c
+t_line	*create_line(t_pixel a, t_pixel b);
 void	line_put(t_window *w, t_pixel a, t_pixel b);
 
 // mtx.c
@@ -105,10 +110,12 @@ void	mtx_setline(double line[3][3], double a, double b, double c);
 
 // obj.c
 t_obj	*create_obj(char *file);
-void	render_obj(t_window *w);
 void	update_mtx(t_obj *obj);
 void	add_angles(int alpha, int beta, int gamma, t_obj *obj);
 void	display_obj(t_window *w);
+
+// obj_ext.c
+void	render_obj(t_window *w);
 
 // window.c
 t_window	*create_win(int x, int y, char *name);

@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:42:59 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/11/12 16:52:28 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/07 23:42:29 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ t_window	*create_win(int x, int y, char *name)
 	w->img = NULL;
 	w->obj = NULL;
 	w->scale = 1;
+	w->offx = 0;
+	w->offy = 0;
+	w->moving = 0;
 	w->width = x;
 	w->height = y;
 	w->mlx = mlx_init();
