@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 13:50:22 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/07 20:52:48 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/08 22:39:11 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,8 @@ t_obj	*create_obj(char *file)
 	obj->angly = 0;
 	obj->anglz = 0;
 	obj->grid = NULL;
-	obj->offx = 0;
-	obj->offy = 0;
-	obj->offz = 0;
+	obj->projected = 0;
+	obj->distance = 2;
 	obj->img = NULL;
 	read_file(file, obj);
 	add_angles(35, 45, 0, obj);

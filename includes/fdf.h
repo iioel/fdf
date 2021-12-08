@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/07 23:42:03 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/08 22:53:31 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "libft.h"
 # include <mlx.h>
 # include <math.h>
+# include <stdlib.h>
 
 typedef struct s_img
 {
@@ -40,9 +41,8 @@ typedef struct s_obj
 	double	roty[3][3];
 	double	rotz[3][3];
 	short	*grid;
-	int		offx;
-	int		offy;
-	int		offz;
+	int		projected;
+	double	distance;
 	t_img	*img;
 }				t_obj;
 
@@ -78,7 +78,7 @@ typedef struct s_line
 	double	hsv_c_i[3];
 }				t_line;
 
-int		display(t_window *w);
+t_window *save_window(t_window *w);
 
 // file.c
 int	read_file(char *f, t_obj *obj);
@@ -89,6 +89,17 @@ void	set_hsv_d(double hsv_c[3], double H, double S, double V);
 void	conv_rgb(double rgb[3], short h, double c, double x);
 int		hsv2rgb(short h, short s, short v);
 
+// catch_win.c
+int	catch_exit(int t, t_window *w);
+
+// catch_key.c
+int	catch_key(int t, t_window *w);
+
+// catch_mouse.c
+int	catch_button_press(int t, t_window *w);
+int	catch_button_release(int t, t_window *w);
+int	catch_mouse_moves(int x, int y, t_window *w);
+
 // math.c
 int		ft_abs(int i);
 
@@ -97,7 +108,7 @@ t_img	*create_image(t_window *w);
 
 // mlx_utils.c
 void	mlx_pixel_put_img(t_img *img, int x, int y, unsigned int color);
-void	rotate(double *x, double *y, double *z, t_obj *obj);
+void	rotate(double *x, double *y, double *z, t_window *w);
 t_pixel	get_pixel(t_window *w, int x, int y, int z);
 
 // line.c

@@ -3,11 +3,14 @@ NAME = fdf
 SRCS = fdf.c \
 	   file.c \
 	   color.c \
-	   math.c \
+	   catch_key.c \
+	   catch_win.c \
+	   catch_mouse.c \
 	   image.c \
-	   mlx_utils.c \
 	   line.c \
 	   mtx.c \
+	   math.c \
+	   mlx_utils.c \
 	   obj.c \
 	   obj_ext.c \
 	   window.c \
