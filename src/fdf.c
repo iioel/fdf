@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 20:14:05 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 14:45:18 by yoel             ###   ########.fr       */
+/*   Updated: 2021/12/14 14:59:09 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,16 @@ int	error(char *msg)
 	return (1);
 }
 
+static void	define_hooks(t_window *w)
+{
+	mlx_hook(w->w, 2, (1L << 0), catch_key, w);
+	mlx_hook(w->w, 17, (1L << 0), catch_exit, w);
+	mlx_hook(w->w, 4, (1L << 2), catch_button_press, w);
+	mlx_hook(w->w, 5, (1L << 3), catch_button_release, w);
+	mlx_hook(w->w, 6, (1L << 8), catch_mouse_moves, w);
+	mlx_hook(w->w, 6, (1L << 6), catch_mouse_moves, w);
+}
+
 int	main(int ac, char **av)
 {
 	t_window	*w;
@@ -53,12 +63,7 @@ int	main(int ac, char **av)
 		w->obj->distance *= w->scale * w->obj->width * 7;
 		render_obj(w);
 		display_obj(w);
-		mlx_hook(w->w, 2, (1L << 0), catch_key, w);
-		mlx_hook(w->w, 17, (1L << 0), catch_exit, w);
-		mlx_hook(w->w, 4, (1L << 2), catch_button_press, w);
-		mlx_hook(w->w, 5, (1L << 3), catch_button_release, w);
-		mlx_hook(w->w, 6, (1L << 8), catch_mouse_moves, w);
-		mlx_hook(w->w, 6, (1L << 6), catch_mouse_moves, w);
+		define_hooks(w);
 		mlx_do_key_autorepeaton(w->mlx);
 		mlx_loop(w->mlx);
 	}

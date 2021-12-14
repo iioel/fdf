@@ -6,7 +6,7 @@
 /*   By: yoel <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 03:14:10 by yoel              #+#    #+#             */
-/*   Updated: 2021/12/14 14:47:36 by yoel             ###   ########.fr       */
+/*   Updated: 2021/12/14 16:13:15 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,22 +65,38 @@ static int	ft_atoinskip(char **str)
 	return (res * factor);
 }
 
+static int	extend_grid(short **grid, int len, int nb_word)
+{
+	int		j;
+	short	*temp;
+
+	temp = malloc((len + nb_word) * sizeof(short));
+	if (!temp)
+	{
+		free(*grid);
+		*grid = NULL;
+		return (error(strerror(errno)));
+	}
+	j = -1;
+	while (++j < len)
+		temp[j] = (*grid)[j];
+	free(*grid);
+	*grid = temp;
+	return (0);
+}
+
 static int	read_line(char *line, short **grid, int *grid_len, t_obj *obj)
 {
 	int		j;
 	int		nb_word;
-	short	*temp;
 
 	nb_word = ft_strcntword(line, ' ');
-	temp = malloc((*grid_len + nb_word) * sizeof(short));
-	if (!temp)
-		return (error("Malloc failed ! Exiting..."));
-	j = -1;
-	while (++j < *grid_len)
-		temp[j] = (*grid)[j];
-	free(*grid);
-	*grid = temp;
-	j += nb_word;
+	if (extend_grid(grid, *grid_len, nb_word))
+	{
+		free(line);
+		return (1);
+	}
+	j = *grid_len + nb_word;
 	while (*grid_len < j)
 	{
 		(*grid)[*grid_len] = ft_atoinskip(&line);
@@ -118,9 +134,6 @@ int	read_file(char *f, t_obj *obj)
 		line = get_next_line(fd);
 		obj->grid = grid;
 	}
-	free(line);
-	if (err)
-		free(grid);
 	if (err)
 		return (1);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 13:50:22 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 14:45:03 by yoel             ###   ########.fr       */
+/*   Updated: 2021/12/14 16:13:30 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_obj	*create_obj(char *file)
 	obj->img = NULL;
 	if (read_file(file, obj))
 	{
-		free(obj);
+		clean_obj(obj, NULL);
 		return (NULL);
 	}
 	add_angles(35, 45, 0, obj);
@@ -72,7 +72,7 @@ void	add_angles(int alpha, int beta, int gamma, t_obj *obj)
 	update_mtx(obj);
 }
 
-int		clean_obj(t_obj *obj, void *mlx)
+int	clean_obj(t_obj *obj, void *mlx)
 {
 	if (obj->img)
 	{
