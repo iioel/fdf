@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 20:14:05 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/08 23:02:25 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/14 14:09:14 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 #include "fdf.h"
 #include "libft.h"
 
-t_window *save_window(t_window *w)
+t_window	*save_window(t_window *w)
 {
-	static t_window *win = NULL;
+	static t_window	*win = NULL;
 
 	if (w != NULL)
 		win = w;
@@ -31,14 +31,20 @@ t_window *save_window(t_window *w)
 int	main(int ac, char **av)
 {
 	t_window	*w;
+	t_obj		*obj;
 
 	if (ac == 2)
 	{
+		obj = create_obj(av[1]);
+		if (! obj)
+			exit(1);
 		w = create_win(2000, 1200, "fdf");
+		if (! w)
+			exit(1);
+		w->obj = obj;
 		save_window(w);
-		w->obj = create_obj(av[1]);
 		w->scale = (w->width - w->width * 0.3) / w->obj->width;
-		w->obj->distance *= w->scale * w->obj->width * 6;
+		w->obj->distance *= w->scale * w->obj->width * 7;
 		render_obj(w);
 		display_obj(w);
 		mlx_hook(w->w, 2, (1L << 0), catch_key, w);

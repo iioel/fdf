@@ -33,7 +33,7 @@ LIBFT = libft.a
 LIBFT_DIR = libft
 
 CC = clang
-CFLAGS = -I $(HEADERS) -g -fsanitize=address
+CFLAGS = -I $(HEADERS) -I $(MLX_DIR) -I $(LIBFT_DIR) -g -fsanitize=address
 LFLAGS = $(CFLAGS) -lmlx -framework OpenGL -framework AppKit -L $(MLX_DIR) #-fsanitize=address -g
 #LFLAGS = $(CFLAGS) -lmlx -L $(MLX_DIR)#-fsanitize=address -g
 
@@ -55,19 +55,19 @@ $(_OBJS): $(OBJS_DIR)/%.o : $(SRCS_DIR)/%.c $(DIRS) $(LIBFT_DIR)/$(LIBFT) mlx
 $(LIBFT_DIR)/$(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR) all
 	$(MAKE) -C $(LIBFT_DIR) bonus
-	cp $(LIBFT_DIR)/libft.h $(HEADERS)/libft.h
+	#cp $(LIBFT_DIR)/libft.h $(HEADERS)/libft.h
 
 mlx:
 	@echo "=========== Compiling MinilibX ==========="
 	$(MAKE) -C $(MLX_DIR)
-	cp $(MLX_DIR)/mlx.h $(HEADERS)/mlx.h
+	#cp $(MLX_DIR)/mlx.h $(HEADERS)/mlx.h
 #	cp $(MLX_DIR)/libmlx.dylib .
 	@echo "========= End Compiling MinilibX ========="
 
 mlx_clean:
 	@echo "=========== Compiling MinilibX ==========="
 	$(MAKE) -C $(MLX_DIR) clean
-	rm $(HEADERS)/mlx.h
+	#rm $(HEADERS)/mlx.h
 	@echo "========= End Compiling MinilibX ========="
 
 $(DIRS):

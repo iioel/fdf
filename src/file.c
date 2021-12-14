@@ -6,7 +6,7 @@
 /*   By: yoel <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 03:14:10 by yoel              #+#    #+#             */
-/*   Updated: 2021/12/07 20:55:42 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/14 14:15:09 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,15 @@
 #include "fdf.h"
 #include "libft.h"
 #include "get_next_line.h"
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+
+static int	error(const char *msg)
+{
+	perror(msg);
+	return (1);
+}
 
 static size_t	ft_strcntword(char const *s, char sep)
 {
@@ -71,7 +80,7 @@ static int	read_line(char *line, short **grid, int *grid_len, t_obj *obj)
 	nb_word = ft_strcntword(line, ' ');
 	temp = malloc((*grid_len + nb_word) * sizeof(short));
 	if (!temp)
-		return (1);
+		return (error("Malloc failed ! Exiting...\n"));
 	j = -1;
 	while (++j < *grid_len)
 		temp[j] = (*grid)[j];
@@ -86,6 +95,8 @@ static int	read_line(char *line, short **grid, int *grid_len, t_obj *obj)
 	}
 	if (! obj->width)
 		obj->width = nb_word;
+	if (nb_word != obj->width)
+		return (error("Found wrond line length ! Exiting...\n"));
 	obj->length = *grid_len / obj->width;
 	return (0);
 }
@@ -99,6 +110,8 @@ int	read_file(char *f, t_obj *obj)
 
 	grid_len = 0;
 	fd = open(f, O_RDONLY);
+	if (fd < 0)
+		return (error(strerror(errno)));
 	grid = NULL;
 	line = get_next_line(fd);
 	while (line)
