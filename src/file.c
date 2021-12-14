@@ -6,7 +6,7 @@
 /*   By: yoel <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 03:14:10 by yoel              #+#    #+#             */
-/*   Updated: 2021/12/14 14:15:09 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/14 14:47:36 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,6 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-
-static int	error(const char *msg)
-{
-	perror(msg);
-	return (1);
-}
 
 static size_t	ft_strcntword(char const *s, char sep)
 {
@@ -80,7 +74,7 @@ static int	read_line(char *line, short **grid, int *grid_len, t_obj *obj)
 	nb_word = ft_strcntword(line, ' ');
 	temp = malloc((*grid_len + nb_word) * sizeof(short));
 	if (!temp)
-		return (error("Malloc failed ! Exiting...\n"));
+		return (error("Malloc failed ! Exiting..."));
 	j = -1;
 	while (++j < *grid_len)
 		temp[j] = (*grid)[j];
@@ -95,8 +89,8 @@ static int	read_line(char *line, short **grid, int *grid_len, t_obj *obj)
 	}
 	if (! obj->width)
 		obj->width = nb_word;
-	if (nb_word != obj->width)
-		return (error("Found wrond line length ! Exiting...\n"));
+	if (nb_word < obj->width)
+		return (error("Found wrong line length ! Exiting..."));
 	obj->length = *grid_len / obj->width;
 	return (0);
 }
@@ -105,9 +99,11 @@ int	read_file(char *f, t_obj *obj)
 {
 	int		fd;
 	int		grid_len;
+	char	err;
 	char	*line;
 	short	*grid;
 
+	err = 0;
 	grid_len = 0;
 	fd = open(f, O_RDONLY);
 	if (fd < 0)
@@ -117,11 +113,15 @@ int	read_file(char *f, t_obj *obj)
 	while (line)
 	{
 		if (read_line(line, &grid, &grid_len, obj))
-			return (1);
+			err = 1;
 		free(line);
 		line = get_next_line(fd);
 		obj->grid = grid;
 	}
 	free(line);
+	if (err)
+		free(grid);
+	if (err)
+		return (1);
 	return (0);
 }

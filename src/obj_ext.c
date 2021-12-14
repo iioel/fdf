@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 20:53:05 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/07 20:53:38 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/14 14:50:12 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ void	render_obj(t_window *w)
 	x = 0;
 	obj = w->obj;
 	if (obj->img)
+	{
 		mlx_destroy_image(w->mlx, obj->img->img);
+		free(obj->img);
+	}
 	obj->img = create_image(w);
 	while (x < obj->width)
 	{

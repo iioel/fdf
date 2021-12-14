@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:42:59 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 13:18:53 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/14 14:21:52 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	clean_win(t_window *w)
 {	
 	mlx_destroy_window(w->mlx, w->w);
 	if (w->obj)
-		clean_obj(w->obj);
+		clean_obj(w->obj, w->mlx);
 	free(w);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 20:14:05 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 14:09:14 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/14 14:45:18 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,12 @@ t_window	*save_window(t_window *w)
 	return (win);
 }
 
+int	error(char *msg)
+{
+	ft_putendl_fd(msg, 2);
+	return (1);
+}
+
 int	main(int ac, char **av)
 {
 	t_window	*w;
@@ -40,7 +46,7 @@ int	main(int ac, char **av)
 			exit(1);
 		w = create_win(2000, 1200, "fdf");
 		if (! w)
-			exit(1);
+			exit(clean_obj(obj, NULL));
 		w->obj = obj;
 		save_window(w);
 		w->scale = (w->width - w->width * 0.3) / w->obj->width;

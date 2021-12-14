@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 18:07:33 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 12:43:16 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/14 14:44:40 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,9 @@ typedef struct s_line
 	double	hsv_c_i[3];
 }				t_line;
 
+// fdf.c
 t_window	*save_window(t_window *w);
+int			error(char *msg);
 
 // file.c
 int			read_file(char *f, t_obj *obj);
@@ -153,7 +155,7 @@ t_obj		*create_obj(char *file);
 void		update_mtx(t_obj *obj);
 void		add_angles(int alpha, int beta, int gamma, t_obj *obj);
 void		display_obj(t_window *w);
-void		clean_obj(t_obj *obj);
+int			clean_obj(t_obj *obj, void *mlx);
 
 // obj_ext.c
 void		render_obj(t_window *w);
