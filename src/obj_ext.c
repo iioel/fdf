@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 20:53:05 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 14:50:12 by yoel             ###   ########.fr       */
+/*   Updated: 2021/12/14 16:26:30 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ void	render_obj(t_window *w)
 		free(obj->img);
 	}
 	obj->img = create_image(w);
+	if (! obj->img)
+		exit(clean_win(w));
 	while (x < obj->width)
 	{
 		y = 0;

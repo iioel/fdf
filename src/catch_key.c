@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 14:53:10 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 12:51:09 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/14 16:28:13 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,16 @@
 
 static void	set_projected(t_window *w)
 {
-	w->obj->projected = 1;
-	w->scale = w->obj->distance / w->obj->width;
+	if (w->obj->projected)
+	{
+		w->obj->projected = 0;
+		w->scale = (w->width - w->width * 0.3) / w->obj->width;
+	}
+	else
+	{
+		w->obj->projected = 1;
+		w->scale = w->obj->distance / w->obj->width;
+	}
 }
 
 static void	set_isometric(t_window *w)

@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 15:13:00 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 11:47:36 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/14 16:25:47 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	rotate(double *x, double *y, double *z, t_window *w)
 
 t_pixel	get_pixel(t_window *w, int x, int y, int z)
 {
-	t_pixel	d;
+	t_pixel	p;
 	double	s_x;
 	double	s_y;
 	double	s_z;
@@ -55,8 +55,8 @@ t_pixel	get_pixel(t_window *w, int x, int y, int z)
 	s_y = ((double)y - w->obj->length / 2) * w->scale;
 	s_z = ((double)z - w->obj->height / 2) * w->scale;
 	rotate(&s_x, &s_y, &s_z, w);
-	d.x = (int)s_x + w->width / 2 + w->offx;
-	d.y = (int)s_y + w->height / 2 + w->offy;
-	set_hsv(d.hsv_c, 60 + z * 26, 40, 100);
-	return (d);
+	p.x = (int)s_x + w->width / 2 + w->offx;
+	p.y = (int)s_y + w->height / 2 + w->offy;
+	set_hsv(p.hsv_c, 60 + z * 26, 40, 100);
+	return (p);
 }
